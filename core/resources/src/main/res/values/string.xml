@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="image_news_description">Image for the title %1$s author %2$s</string>
+
+    <string name="error_no_internet_connection">No internet connection</string>
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="error_nothing_found">Nothing found</string>
 </resources>
