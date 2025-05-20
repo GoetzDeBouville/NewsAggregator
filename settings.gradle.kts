@@ -21,4 +21,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "NewsAggregator"
 include(":app")
- 
+include(":uikit")
+include(":core:data:dto")
+include(":core:domain:models")
+include(":core:data:network")
+include(":feature:newslist:presentation")
+include(":feature:newslist:data")
+include(":feature:newslist:domain")
+include(":core:resources")
+include(":core:utils")
+include(":feature:newslist:di")
+include(":core:data:di")

@@ -14,23 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.newsaggregator.data.rss.RssFeed
 import com.example.newsaggregator.ui.theme.NewsAggregatorTheme
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.launch
-import nl.adaptivity.xmlutil.serialization.XML
-import okhttp3.MediaType
-import retrofit2.Retrofit
-
-private val retrofit = Retrofit.Builder()
-    .baseUrl("https://www.theguardian.com")
-    .addConverterFactory(
-        XML.asConverterFactory(
-            MediaType.get("application/xml; charset=UTF8")
-        )
-    ).build()
-
-private val guardian = retrofit.create(RssFeed::class.java)
 
 class MainActivity : ComponentActivity() {
 
@@ -42,8 +27,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         text = "Press me!",
-                        modifier = Modifier.padding(innerPadding),
-                        guardian,
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
@@ -54,21 +38,20 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(
     text: String,
-    modifier: Modifier = Modifier,
-    feed: RssFeed,
+    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     Button(
         onClick = {
             Log.d("happy", "done")
             scope.launch {
-                val r = feed.getRss()
-                r.channel.items.forEach {
-                    Log.d("link", it.link)
-                    Log.d("guid", it.guid)
-                    Log.d("dcDate", it.dcDate)
-                    Log.d("pubDate", it.pubDate)
-                }
+//                val r = feed.getRss()
+//                r.channel.items.forEach {
+//                    Log.d("link", it.link)
+//                    Log.d("guid", it.guid)
+//                    Log.d("dcDate", it.dcDate)
+//                    Log.d("pubDate", it.pubDate)
+//                }
             }
         }
     ) {
@@ -85,8 +68,7 @@ fun Greeting(
 fun GreetingPreview() {
     NewsAggregatorTheme {
         Greeting(
-            text = "Press me!",
-            feed = guardian
+            text = "Press me!"
         )
     }
 }
