@@ -46,6 +46,7 @@ android {
 dependencies {
     implementation(project(":feature:article:presentation"))
     implementation(project(":feature:newslist:presentation"))
+    implementation(project(":core:presentation:nav"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

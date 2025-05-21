@@ -41,6 +41,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.core.domain.models.Item
+import com.example.core.presentation.nav.Routes
 import com.example.core.resources.IconPlaceholder
 import com.example.core.resources.R
 import com.newsapp.uikit.Categories
@@ -109,7 +110,6 @@ private fun ItemList(
     }
 }
 
-
 @Composable
 private fun NewsItem(
     navController: NavController,
@@ -121,7 +121,7 @@ private fun NewsItem(
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
             .clickable {
-//                navController.navigate()
+                navController.navigate(Routes.ArticleScreen.createRoute(item.guid))
             },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),

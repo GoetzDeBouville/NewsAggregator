@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:presentation:nav"))
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
