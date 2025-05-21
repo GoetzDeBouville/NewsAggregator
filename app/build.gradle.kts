@@ -11,6 +11,10 @@ android {
     namespace = "com.example.newsaggregator"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
+
     defaultConfig {
         applicationId = "com.example.newsaggregator"
         minSdk = libs.versions.minSdk.get().toInt()

@@ -44,7 +44,7 @@ import com.example.core.presentation.nav.Routes
 import com.example.core.resources.IconPlaceholder
 import com.example.core.resources.R
 import com.newsapp.uikit.Categories
-import com.newsapp.uikit.HtmlText
+import com.newsapp.uikit.DescriptionHtmlText
 import com.newsapp.uikit.LoadingIndicator
 import com.newsapp.uikit.error.ErrorScreen
 import com.newsapp.uikit.error.ErrorScreenState
@@ -149,14 +149,19 @@ private fun NewsItem(
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = item.title,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge
             )
-            HtmlText(html = item.description)
+            DescriptionHtmlText(
+                html = item.description,
+                textColor = MaterialTheme.colorScheme.onSurface
+            )
             Categories(item.categories)
 
             Text(
                 text = item.pubDate,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.labelMedium
             )
         }
     }
