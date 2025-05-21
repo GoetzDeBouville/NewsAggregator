@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:article:presentation"))
+    implementation(project(":feature:newslist:presentation"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -66,7 +68,6 @@ dependencies {
 
     // room
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
@@ -80,8 +81,4 @@ dependencies {
     // coroutine
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-
-    // xmlutil
-    implementation(libs.bundles.xmlutil)
-
 }

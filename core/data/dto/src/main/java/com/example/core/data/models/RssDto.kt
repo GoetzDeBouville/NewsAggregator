@@ -1,28 +1,14 @@
 package com.example.core.data.models
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-/*
-class Rss<CHANNEL> private constructor(
-    private val body: Body<CHANNEL>
-) {
-    constructor(data: CHANNEL) : this(Body(data))
-
-    val data: CHANNEL get() = body.data
-
-    @Serializable
-    private data class Body<CHANNEL>(@Polymorphic val data: CHANNEL)
-
-}
-
- */
-
-@Serializable
-@XmlSerialName("rss")
+@Root(name = "rss", strict = false)
 data class RssDto(
-    val version: String,
-    @XmlElement
-    val channel: ChannelDto
+    @field:Attribute(name = "version", required = false)
+    var version: String? = null,
+
+    @field:Element(name = "channel")
+    var channel: ChannelDto = ChannelDto()
 )

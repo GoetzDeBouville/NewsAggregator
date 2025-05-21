@@ -1,13 +1,20 @@
 package com.example.core.data.models
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-@Serializable
-@XmlSerialName("content", "http://search.yahoo.com/mrss/", "media")
+@Root(name = "media:content", strict = false)
 data class ContentDto(
-    val type: String?,
-    val width: String?,
-    val url: String,
-    val credit: CreditDto?,
+    @field:Attribute(name = "type", required = false)
+    var type: String? = null,
+
+    @field:Attribute(name = "width", required = false)
+    var width: String? = null,
+
+    @field:Attribute(name = "url", required = true)
+    var url: String = "",
+
+    @field:Element(name = "media:credit", required = false)
+    var credit: CreditDto? = null
 )

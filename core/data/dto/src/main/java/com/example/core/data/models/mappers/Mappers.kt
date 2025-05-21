@@ -16,13 +16,13 @@ import com.example.core.domain.models.Item
 import com.example.core.domain.models.Rss
 
 fun CategoryDto.toDomain() = Category(
-    domain = domain,
-    value = value
+    domain = domain ?: "",
+    value = value ?: ""
 )
 
 fun CreditDto.toDomain() = Credit(
     scheme = scheme,
-    value = value
+    value = value ?: ""
 )
 
 fun ContentDto.toDomain() = Content(
@@ -33,38 +33,34 @@ fun ContentDto.toDomain() = Content(
 )
 
 fun ImageDto.toDomain() = Image(
-    title = title,
-    url = url,
-    link = link
+    title = title ?: "",
+    url = url ?: "",
+    link = link ?: ""
 )
 
 fun ItemDto.toDomain() = Item(
-    title = title,
-    link = link,
-    description = description,
+    title = title ?: "",
+    link = link ?: "",
+    description = description ?: "",
     categories = categories.map { it.toDomain() },
-    pubDate = pubDate,
-    guid = guid,
+    pubDate = pubDate ?: "",
+    guid = guid ?: "",
     contents = contents.map { it.toDomain() },
-    dcCreator = dcCreator,
-    dcDate = dcDate
+    dcCreator = dcCreator ?: "",
+    dcDate = dcDate ?: ""
 )
 
 fun ChannelDto.toDomain() = Channel(
-    title = title,
-    link = link,
-    description = description,
-    language = language,
-    copyright = copyright,
-    pubDate = pubDate,
-    dcDate = dcDate,
-    dcLanguage = dcLanguage,
-    dcRights = dcRights,
-    image = image.toDomain(),
+    title = title ?: "",
+    link = link ?: "",
+    description = description ?: "",
+    copyright = copyright ?: "",
+    pubDate = pubDate ?: "",
+    image = image?.toDomain() ?: Image("", "", ""),
     items = items.map { it.toDomain() }
 )
 
 fun RssDto.toDomain() = Rss(
-    version = version,
+    version = version ?: "",
     channel = channel.toDomain()
 )

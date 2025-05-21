@@ -1,43 +1,35 @@
 package com.example.core.data.models
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.ElementList
+import org.simpleframework.xml.Root
 
-@Serializable
-@XmlSerialName("item")
+@Root(name = "item", strict = false)
 data class ItemDto(
-    @XmlSerialName("title")
-    @XmlElement(true)
-    val title: String,
+    @field:Element(name = "title", required = false)
+    var title: String? = null,
 
-    @XmlSerialName("link")
-    @XmlElement(true)
-    val link: String,
+    @field:Element(name = "link", required = false)
+    var link: String? = null,
 
-    @XmlSerialName("description")
-    @XmlElement(true)
-    val description: String,
+    @field:Element(name = "description", required = false)
+    var description: String? = null,
 
-    val categories: List<CategoryDto>,
+    @field:ElementList(entry = "category", inline = true, required = false)
+    var categories: List<CategoryDto> = mutableListOf(), // simpleXml заполняет списки динамически ):
 
-    @XmlSerialName("pubDate")
-    @XmlElement(true)
-    val pubDate: String,
+    @field:Element(name = "pubDate", required = false)
+    var pubDate: String? = null,
 
-    @XmlSerialName("guid")
-    @XmlElement(true)
-    val guid: String,
+    @field:Element(name = "guid", required = false)
+    var guid: String? = null,
 
-    val contents: List<ContentDto>,
+    @field:ElementList(name = "media:content", inline = true, required = false)
+    var contents: List<ContentDto> = mutableListOf(), // simpleXml заполняет списки динамически ):
 
-    @XmlSerialName("creator", "http://purl.org/dc/elements/1.1/", "dc")
-    @XmlElement(true)
-    val dcCreator: String,
+    @field:Element(name = "dc:creator", required = false)
+    var dcCreator: String? = null,
 
-
-    @XmlSerialName("date", "http://purl.org/dc/elements/1.1/", "dc")
-    @XmlElement(true)
-    val dcDate: String
-
+    @field:Element(name = "dc:date", required = false)
+    var dcDate: String? = null
 )

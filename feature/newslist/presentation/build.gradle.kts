@@ -10,6 +10,9 @@ android {
     namespace = "com.example.feature.newslist.presentation"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
@@ -44,6 +47,7 @@ dependencies {
     implementation(project(":core:domain:models"))
     implementation(project(":feature:newslist:domain"))
     implementation(project(":core:resources"))
+    implementation(project(":feature:newslist:di"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -1,18 +1,12 @@
 package com.example.core.data.di
 
 import com.example.core.data.network.api.NewsApi
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.ExperimentalSerializationApi
-import nl.adaptivity.xmlutil.XmlDeclMode
-import nl.adaptivity.xmlutil.serialization.XML
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -22,35 +16,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient =
-        OkHttpClient.Builder()
-            .addNetworkInterceptor(
-                HttpLoggingInterceptor()
-                    .setLevel(HttpLoggingInterceptor.Level.BODY)
-            )
-            .build()
-
-    @OptIn(ExperimentalSerializationApi::class)
-    @Provides
-    @Singleton
-    fun provideXml(): XML = XML {
-        autoPolymorphic = true
-        indentString = " "
-        xmlDeclMode = XmlDeclMode.None
-        repairNamespaces = true
-    }
-
-    @OptIn(ExperimentalSerializationApi::class)
-    @Provides
-    @Singleton
-    fun provideRetrofit(client: OkHttpClient, xml: XML): Retrofit =
-        Retrofit.Builder()
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(
-                xml.asConverterFactory("application/xml; charset=UTF-8".toMediaType())
-            )
-            .client(client)
+            .addConverterFactory(SimpleXmlConverterFactory.createNonStrict())
             .build()
+    }
 
     @Provides
     @Singleton

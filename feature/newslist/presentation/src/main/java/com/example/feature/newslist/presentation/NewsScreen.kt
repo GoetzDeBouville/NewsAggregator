@@ -34,16 +34,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.core.domain.models.Category
-import com.example.core.domain.models.Content
-import com.example.core.domain.models.Credit
 import com.example.core.domain.models.Item
 import com.example.core.resources.IconPlaceholder
 import com.example.core.resources.R
@@ -64,7 +60,9 @@ fun NewsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Practicum Todo List") },
+                title = {
+                    Text(stringResource(R.string.app_name))
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White

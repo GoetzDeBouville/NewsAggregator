@@ -48,8 +48,6 @@ dependencies {
 
     implementation(libs.retrofit2)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.logging.interceptor)
 
-    implementation(libs.bundles.xmlutil)
-
+    implementation(libs.converter.simplexml)
 }

@@ -1,21 +1,16 @@
 package com.example.core.data.models
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.Root
 
-@Serializable
-@XmlSerialName("image")
+@Root(name = "image", strict = false)
 data class ImageDto(
-    @XmlSerialName("title")
-    @XmlElement(true)
-    val title: String,
+    @field:Element(name = "title", required = false)
+    var title: String? = null,
 
-    @XmlSerialName("url")
-    @XmlElement(true)
-    val url: String,
+    @field:Element(name = "url", required = false)
+    var url: String? = null,
 
-    @XmlSerialName("link")
-    @XmlElement(true)
-    val link: String
+    @field:Element(name = "link", required = false)
+    var link: String? = null
 )

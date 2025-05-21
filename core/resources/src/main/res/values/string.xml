@@ -8,4 +8,6 @@
 
 
     <string name="empty_list">No news today</string>
+
+    <string name="app_name">NewsAggregator</string>
 </resources>

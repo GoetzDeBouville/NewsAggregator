@@ -1,49 +1,29 @@
 package com.example.core.data.models
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import org.simpleframework.xml.Element
+import org.simpleframework.xml.ElementList
+import org.simpleframework.xml.Root
 
-@Serializable
-@XmlSerialName("channel")
+@Root(name = "channel", strict = false)
 data class ChannelDto(
-    @XmlSerialName("title")
-    @XmlElement(true)
-    val title: String,
+    @field:Element(name = "title", required = false)
+    var title: String? = null,
 
-    @XmlSerialName("link")
-    @XmlElement(true)
-    val link: String,
+    @field:Element(name = "link", required = false)
+    var link: String? = null,
 
-    @XmlSerialName("description")
-    @XmlElement(true)
-    val description: String,
+    @field:Element(name = "description", required = false)
+    var description: String? = null,
 
-    @XmlSerialName("language")
-    @XmlElement(true)
-    val language: String,
+    @field:Element(name = "copyright", required = false)
+    var copyright: String? = null,
 
-    @XmlSerialName("copyright")
-    @XmlElement(true)
-    val copyright: String,
+    @field:Element(name = "pubDate", required = false)
+    var pubDate: String? = null,
 
-    @XmlSerialName("pubDate")
-    @XmlElement(true)
-    val pubDate: String,
+    @field:Element(name = "image", required = false)
+    var image: ImageDto? = null,
 
-    @XmlSerialName("date", "http://purl.org/dc/elements/1.1/", "dc")
-    @XmlElement(true)
-    val dcDate: String,
-
-    @XmlSerialName("language", "http://purl.org/dc/elements/1.1/", "dc")
-    @XmlElement(true)
-    val dcLanguage: String,
-
-    @XmlSerialName("rights", "http://purl.org/dc/elements/1.1/", "dc")
-    @XmlElement(true)
-    val dcRights: String,
-
-    val image: ImageDto,
-
-    val items: List<ItemDto>,
+    @field:ElementList(name = "item", inline = true, required = false)
+    var items: List<ItemDto> = mutableListOf() // simpleXml заполняет списки динамически ):
 )

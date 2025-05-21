@@ -50,8 +50,4 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.retrofit2)
-    implementation(libs.logging.interceptor)
-
-    implementation(libs.bundles.xmlutil)
-
 }

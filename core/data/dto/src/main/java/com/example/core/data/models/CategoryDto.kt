@@ -1,15 +1,14 @@
 package com.example.core.data.models
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
-import nl.adaptivity.xmlutil.serialization.XmlValue
+import org.simpleframework.xml.Attribute
+import org.simpleframework.xml.Root
+import org.simpleframework.xml.Text
 
-@Serializable
-@XmlSerialName("category")
+@Root(name = "category", strict = false)
 data class CategoryDto(
+    @field:Attribute(name = "domain", required = false)
+    var domain: String? = null,
 
-    val domain: String,
-
-    @XmlValue
-    val value: String
+    @field:Text(required = false)
+    var value: String? = null
 )
