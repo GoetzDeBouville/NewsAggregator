@@ -7,7 +7,5 @@ data class Item(
     val categories: List<Category>,
     val pubDate: String,
     val guid: String,
-    val contents: List<Content>,
-    val dcCreator: String,
-    val dcDate: String
+    val contents: List<Content>
 )

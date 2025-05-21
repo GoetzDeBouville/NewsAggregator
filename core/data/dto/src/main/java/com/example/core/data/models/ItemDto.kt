@@ -2,6 +2,7 @@ package com.example.core.data.models
 
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.ElementList
+import org.simpleframework.xml.Namespace
 import org.simpleframework.xml.Root
 
 @Root(name = "item", strict = false)
@@ -24,12 +25,7 @@ data class ItemDto(
     @field:Element(name = "guid", required = false)
     var guid: String? = null,
 
-    @field:ElementList(name = "media:content", inline = true, required = false)
+    @field:ElementList(entry = "content", inline = true, required = false)
+    @Namespace(prefix = "media", reference = "http://search.yahoo.com/mrss/")
     var contents: List<ContentDto> = mutableListOf(), // simpleXml заполняет списки динамически ):
-
-    @field:Element(name = "dc:creator", required = false)
-    var dcCreator: String? = null,
-
-    @field:Element(name = "dc:date", required = false)
-    var dcDate: String? = null
 )

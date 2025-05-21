@@ -4,15 +4,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -126,40 +125,39 @@ private fun NewsItem(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
         ) {
-            if (item.contents.size > 2) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(item.contents[1])
-                        .crossfade(true)
-                        .build(),
-                    placeholder = rememberVectorPainter(image = IconPlaceholder),
-                    contentDescription = stringResource(
-                        R.string.image_news_description,
-                        item.title,
-                        item.contents[1].credit?.scheme ?: ""
-                    ),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.clip(CircleShape)
-                )
-            }
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.contents.getOrNull(1)?.url)
+                    .crossfade(true)
+                    .build(),
+                placeholder = rememberVectorPainter(image = IconPlaceholder),
+                contentDescription = stringResource(
+                    R.string.image_news_description,
+                    item.title,
+                    item.contents.getOrNull(1)?.credit?.scheme ?: ""
+                ),
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
             Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(
-                    text = item.title,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                HtmlText(html = item.description)
-                Categories(item.categories)
+            Text(
+                text = item.title,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            HtmlText(html = item.description)
+            Categories(item.categories)
 
-                Text(
-                    text = item.dcDate,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
+            Text(
+                text = item.pubDate,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }

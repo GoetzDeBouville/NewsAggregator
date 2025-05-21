@@ -45,9 +45,7 @@ fun ItemDto.toDomain() = Item(
     categories = categories.map { it.toDomain() },
     pubDate = pubDate ?: "",
     guid = guid ?: "",
-    contents = contents.map { it.toDomain() },
-    dcCreator = dcCreator ?: "",
-    dcDate = dcDate ?: ""
+    contents = contents.map { it.toDomain() }
 )
 
 fun ChannelDto.toDomain() = Channel(

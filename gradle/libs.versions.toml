@@ -68,6 +68,7 @@ retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit
 converter-simplexml = { module = "com.squareup.retrofit2:converter-simplexml", version.ref = "converterSimplexml" }
 
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 
 # Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -93,6 +94,11 @@ staticAnalysis-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt
 staticAnalysis-detektLibraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 
 [bundles]
+
+coil = [
+    "coil",
+    "coil-network"
+]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
