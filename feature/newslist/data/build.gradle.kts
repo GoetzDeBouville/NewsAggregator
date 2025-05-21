@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    api(project(":feature:newslist:domain"))
+    api(project(":feature:newslist:domain:api"))
     implementation(project(":core:data:network"))
     implementation(project(":core:domain:models"))
     implementation(project(":core:data:dto"))

@@ -45,7 +45,8 @@ android {
 dependencies {
     implementation(project(":uikit"))
     implementation(project(":core:domain:models"))
-    implementation(project(":feature:newslist:domain"))
+    implementation(project(":feature:newslist:domain:api"))
+    implementation(project(":feature:newslist:domain:di"))
     implementation(project(":core:resources"))
     implementation(project(":feature:newslist:di"))
     implementation(project(":core:presentation:nav"))
@@ -61,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.window.size)
 
     implementation(libs.bundles.coil)
 

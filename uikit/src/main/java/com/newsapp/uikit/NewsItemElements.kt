@@ -1,8 +1,5 @@
 package com.newsapp.uikit
 
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
-import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
@@ -14,31 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.text.HtmlCompat
 import com.example.core.domain.models.Category
-
-@Composable
-fun HtmlText(
-    html: String,
-    modifier: Modifier = Modifier
-) {
-    AndroidView(
-        modifier = modifier.padding(top = 8.dp),
-        factory = { context ->
-            TextView(context).apply {
-                movementMethod = LinkMovementMethod.getInstance()
-                autoLinkMask = Linkify.WEB_URLS
-            }
-        },
-        update = { textView ->
-            textView.text = HtmlCompat.fromHtml(
-                html,
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-        }
-    )
-}
 
 @Composable
 fun Categories(categories: List<Category>) {
@@ -67,7 +40,8 @@ private fun CategoryChip(category: Category) {
     ) {
         Text(
             text = category.value,
-            color = MaterialTheme.colorScheme.onSecondary
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.labelSmall
         )
     }
 }

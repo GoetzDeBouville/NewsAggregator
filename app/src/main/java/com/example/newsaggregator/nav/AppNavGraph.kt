@@ -12,12 +12,15 @@ import com.example.presentation.ArticleScreen
 
 
 @Composable
-fun AppNavGraph() {
+fun AppNavGraph(isWideDisplay: Boolean) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routes.NewsListScreen.route) {
         composable(Routes.NewsListScreen.route) {
-            NewsScreen(navController = navController)
+            NewsScreen(
+                isWideDisplay = isWideDisplay,
+                navController = navController
+            )
         }
 
         composable(

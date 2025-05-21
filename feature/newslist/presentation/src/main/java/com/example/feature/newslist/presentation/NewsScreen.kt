@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,6 +53,7 @@ import com.newsapp.uikit.error.ErrorScreenState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(
+    isWideDisplay: Boolean,
     navController: NavController,
     viewModel: NewsViewModel = hiltViewModel()
 ) {
@@ -86,6 +88,7 @@ fun NewsScreen(
 
             else -> {
                 ItemList(
+                    isWideDisplay = isWideDisplay,
                     itemList = state.value.itemList,
                     navController = navController,
                     paddingValues = paddingValues
@@ -98,16 +101,140 @@ fun NewsScreen(
 
 @Composable
 private fun ItemList(
+    isWideDisplay: Boolean,
     itemList: List<Item>,
     navController: NavController,
     paddingValues: PaddingValues,
 ) {
     LazyColumn(contentPadding = paddingValues) {
         items(itemList) { item ->
-            NewsItem(navController, item)
+            AdaptiveNewsItem(
+                isWideDisplay = isWideDisplay,
+                navController = navController,
+                item = item
+            )
         }
     }
 }
+
+@Composable
+private fun AdaptiveNewsItem(
+    isWideDisplay: Boolean,
+    navController: NavController,
+    item: Item
+) {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .clickable {
+                navController.navigate(Routes.ArticleScreen.createRoute(item.guid))
+            },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+        ) {
+            if (isWideDisplay) {
+                Row {
+                    ImageBlock(
+                        item,
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .clip(RoundedCornerShape(16.dp))
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    TitleBlock(
+                        item,
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
+            } else {
+                ImageBlock(
+                    item,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                TitleBlock(
+                    item,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+
+            DescriptionHtmlText(
+                html = item.description,
+                textColor = MaterialTheme.colorScheme.onSurface
+            )
+            Categories(item.categories)
+
+            Text(
+                text = item.pubDate,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    }
+}
+
+@Composable
+private fun ImageBlock(
+    item: Item,
+    modifier: Modifier = Modifier
+) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(item.contents.getOrNull(1)?.url)
+            .crossfade(true)
+            .build(),
+        placeholder = rememberVectorPainter(image = IconPlaceholder),
+        contentDescription = stringResource(
+            R.string.image_news_description,
+            item.title,
+            item.contents.getOrNull(1)?.credit?.scheme ?: ""
+        ),
+        contentScale = ContentScale.FillWidth,
+        modifier = modifier
+            .height(240.dp)
+            .clip(RoundedCornerShape(16.dp))
+    )
+}
+
+@Composable
+private fun TitleBlock(
+    item: Item,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = item.title,
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun Empty() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.empty_list),
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
+}
+
 
 @Composable
 private fun NewsItem(
@@ -164,20 +291,5 @@ private fun NewsItem(
                 style = MaterialTheme.typography.labelMedium
             )
         }
-    }
-}
-
-@Composable
-private fun Empty() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(R.string.empty_list),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
     }
 }

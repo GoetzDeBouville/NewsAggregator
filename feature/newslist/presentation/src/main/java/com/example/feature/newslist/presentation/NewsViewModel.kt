@@ -2,6 +2,7 @@ package com.example.feature.newslist.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feature.newslist.domain.api.ExtractCategoriesUseCase
 import com.example.feature.newslist.domain.api.GetNewsRepository
 import com.example.feature.newslist.presentation.models.State
 import com.newsapp.uikit.error.ErrorScreenState
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    private val repository: GetNewsRepository
+    private val repository: GetNewsRepository,
+    private val extractCategories: ExtractCategoriesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(State(isLoading = true))

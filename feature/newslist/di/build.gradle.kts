@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":feature:newslist:data"))
     implementation(project(":core:data:di"))
     implementation(project(":core:domain:models"))
-    implementation(project(":uikit"))
 
     // hilt
     implementation(libs.hilt.android)
