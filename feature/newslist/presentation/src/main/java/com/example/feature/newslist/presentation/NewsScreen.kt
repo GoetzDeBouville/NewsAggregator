@@ -1,5 +1,7 @@
 package com.example.feature.newslist.presentation
 
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,10 +17,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,7 +53,7 @@ import com.example.core.presentation.nav.Routes
 import com.example.core.resources.NoResourceImg
 import com.example.core.resources.PlaceholderImg
 import com.example.core.resources.R
-import com.example.feature.newslist.presentation.models.Intent
+import com.example.feature.newslist.presentation.models.Event
 import com.newsapp.uikit.Categories
 import com.newsapp.uikit.DescriptionHtmlText
 import com.newsapp.uikit.LoadingIndicator
@@ -88,7 +94,7 @@ fun NewsScreen(
                     LaunchedEffect(state.value.toastMessage) {
                         state.value.toastMessage?.let {
                             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                            viewModel.accept(Intent.ClearToast)
+                            viewModel.accept(Event.ClearToast)
                         }
                     }
                     ItemList(
@@ -192,11 +198,18 @@ private fun AdaptiveNewsItem(
             )
             Categories(item.categories)
 
-            Text(
-                text = item.pubDate,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.labelMedium
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = item.pubDate,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.labelMedium
+                )
+                val context = LocalContext.current
+                ShareButton(context, item.link, Modifier.weight(1f))
+            }
         }
     }
 }
@@ -248,6 +261,36 @@ private fun Empty() {
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
+}
+
+
+@Composable
+private fun ShareButton(
+    context: Context,
+    link: String,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        modifier = modifier,
+        onClick = {
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, link)
+            }
+            context.startActivity(
+                Intent.createChooser(
+                    shareIntent,
+                    context.getString(R.string.share_link)
+                )
+            )
+        }
+    ) {
+        Icon(
+            imageVector = Icons.Default.Share,
+            contentDescription = context.getString(R.string.share_icon),
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }

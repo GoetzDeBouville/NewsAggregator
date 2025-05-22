@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">NewsAggregator</string>
     <string name="image_news_description">Image for the title %1$s</string>
 
     <string name="error_no_internet_connection">No internet connection</string>
@@ -8,6 +9,7 @@
 
 
     <string name="empty_list">No news today</string>
+    <string name="share_link">Share link</string>
+    <string name="share_icon">Share icon</string>
 
-    <string name="app_name">NewsAggregator</string>
 </resources>

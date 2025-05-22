@@ -8,7 +8,7 @@ import com.example.core.domain.models.Resource
 import com.example.core.domain.models.Resource.Error
 import com.example.core.resources.R
 import com.example.feature.newslist.domain.api.GetNewsRepository
-import com.example.feature.newslist.presentation.models.Intent
+import com.example.feature.newslist.presentation.models.Event
 import com.example.feature.newslist.presentation.models.State
 import com.newsapp.uikit.error.ErrorScreenState
 import com.newsapp.uikit.error.mapToErrorScreen
@@ -58,17 +58,17 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    internal fun accept(intent: Intent) {
+    internal fun accept(intent: Event) {
         when (intent) {
-            is Intent.ClearSearch -> {}
-            is Intent.ClearToast -> {
+            is Event.ClearSearch -> {}
+            is Event.ClearToast -> {
                 _state.update {
                     it.copy(
                         toastMessage = null
                     )
                 }
             }
-            is Intent.SearchTextChanged -> {}
+            is Event.SearchTextChanged -> {}
         }
     }
 
