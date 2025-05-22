@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:resources"))
     implementation(project(":feature:newslist:di"))
     implementation(project(":core:presentation:nav"))
+    implementation(project(":core:utils"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

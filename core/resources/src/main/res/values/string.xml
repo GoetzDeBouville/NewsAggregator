@@ -12,4 +12,7 @@
     <string name="share_link">Share link</string>
     <string name="share_icon">Share icon</string>
 
+    <string name="search_by_tag">Search by tag</string>
+    <string name="clear_icon">Clear icon</string>
+
 </resources>

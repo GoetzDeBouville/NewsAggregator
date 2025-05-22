@@ -7,5 +7,6 @@ internal data class State(
     val itemList: List<Item> = emptyList(),
     val isLoading: Boolean = false,
     val errorType: ErrorScreenState? = null,
-    val toastMessage: Int? = null
+    val toastMessage: Int? = null,
+    val textInput: String = ""
 )

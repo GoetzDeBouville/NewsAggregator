@@ -27,13 +27,15 @@ class NewsViewModel @Inject constructor(
     private val _state = MutableStateFlow(State(isLoading = true))
     internal val state = _state.asStateFlow()
 
+    private var fullItemList: List<Item> = emptyList()
+
     init {
         loadData()
     }
 
     internal fun accept(intent: Event) {
         when (intent) {
-            is Event.ClearSearch -> {}
+            is Event.ClearSearch -> clearQuery()
             is Event.ClearToast -> {
                 _state.update {
                     it.copy(
@@ -41,8 +43,12 @@ class NewsViewModel @Inject constructor(
                     )
                 }
             }
-            is Event.SearchTextChanged -> {}
-            is Event.Refresh -> loadData()
+
+            is Event.SearchTextChanged -> filterItemsByQuery(intent.query)
+            is Event.Refresh -> {
+                clearQuery()
+                loadData()
+            }
         }
     }
 
@@ -65,6 +71,7 @@ class NewsViewModel @Inject constructor(
                     when (resource) {
                         is Resource.Error -> handleError(resource)
                         is Resource.Success -> _state.update {
+                            fullItemList = resource.data.orEmpty()
                             it.copy(
                                 isLoading = false,
                                 errorType = null,
@@ -77,6 +84,33 @@ class NewsViewModel @Inject constructor(
                     _state.value.copy()
                 }
             }
+        }
+    }
+
+    private fun filterItemsByQuery(query: String) {
+        updateTextInput(query)
+        val filtered = if (query.isBlank()) {
+            fullItemList
+        } else {
+            fullItemList.filter { item ->
+                item.categories.any { category ->
+                    category.contains(query, ignoreCase = true)
+                }
+            }
+        }
+        _state.update { it.copy(itemList = filtered) }
+    }
+
+    private fun updateTextInput(text: String) {
+        _state.update { it.copy(textInput = text) }
+    }
+
+    private fun clearQuery() {
+        _state.update {
+            it.copy(
+                itemList = fullItemList,
+                textInput = ""
+            )
         }
     }
 
