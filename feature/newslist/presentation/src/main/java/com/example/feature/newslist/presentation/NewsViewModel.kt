@@ -28,7 +28,29 @@ class NewsViewModel @Inject constructor(
     internal val state = _state.asStateFlow()
 
     init {
+        loadData()
+    }
+
+    internal fun accept(intent: Event) {
+        when (intent) {
+            is Event.ClearSearch -> {}
+            is Event.ClearToast -> {
+                _state.update {
+                    it.copy(
+                        toastMessage = null
+                    )
+                }
+            }
+            is Event.SearchTextChanged -> {}
+            is Event.Refresh -> loadData()
+        }
+    }
+
+    private fun loadData() {
         viewModelScope.launch {
+            _state.update {
+                _state.value.copy(isLoading = true)
+            }
             runCatching {
                 repository.getNewsItems()
             }.onFailure { e ->
@@ -55,20 +77,6 @@ class NewsViewModel @Inject constructor(
                     _state.value.copy()
                 }
             }
-        }
-    }
-
-    internal fun accept(intent: Event) {
-        when (intent) {
-            is Event.ClearSearch -> {}
-            is Event.ClearToast -> {
-                _state.update {
-                    it.copy(
-                        toastMessage = null
-                    )
-                }
-            }
-            is Event.SearchTextChanged -> {}
         }
     }
 

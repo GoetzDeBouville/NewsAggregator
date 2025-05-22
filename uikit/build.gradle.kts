@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.accompanist.flowlayout)
+    implementation(libs.bundles.coil)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

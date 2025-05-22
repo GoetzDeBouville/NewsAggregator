@@ -1,15 +1,13 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.feature.newslist.presentation
 
-import android.content.Context
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,58 +15,65 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.example.core.domain.models.Item
 import com.example.core.presentation.nav.Routes
-import com.example.core.resources.NoResourceImg
-import com.example.core.resources.PlaceholderImg
 import com.example.core.resources.R
 import com.example.feature.newslist.presentation.models.Event
+import com.example.feature.newslist.presentation.models.State
 import com.newsapp.uikit.Categories
 import com.newsapp.uikit.DescriptionHtmlText
+import com.newsapp.uikit.EmptyScreen
+import com.newsapp.uikit.ImageBlock
 import com.newsapp.uikit.LoadingIndicator
+import com.newsapp.uikit.ShareButton
+import com.newsapp.uikit.TitleBlock
 import com.newsapp.uikit.error.ErrorScreen
-import com.newsapp.uikit.error.ErrorScreenState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(
     isWideDisplay: Boolean,
     navController: NavController,
     viewModel: NewsViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsState().value
+    Content(
+        isWideDisplay,
+        navController,
+        state,
+        viewModel::accept
+    )
+}
 
+@Composable
+private fun Content(
+    isWideDisplay: Boolean,
+    navController: NavController,
+    state: State,
+    accept: (Event) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,41 +89,59 @@ fun NewsScreen(
         floatingActionButtonPosition = FabPosition.Center
     ) { paddingValues ->
         val context = LocalContext.current
-        when {
-            state.value.isLoading -> {
-                LoadingIndicator()
-            }
+        val pullToRefreshState = rememberPullToRefreshState()
 
-            state.value.errorType != null -> {
-                if (state.value.itemList.isNotEmpty()) {
-                    LaunchedEffect(state.value.toastMessage) {
-                        state.value.toastMessage?.let {
-                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                            viewModel.accept(Event.ClearToast)
+        PullToRefreshBox(
+            isRefreshing = state.isLoading,
+            onRefresh = { accept(Event.Refresh) },
+            state = pullToRefreshState,
+            modifier = Modifier.padding(paddingValues),
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = state.isLoading,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    state = pullToRefreshState
+                )
+            }
+        ) {
+            when {
+                state.isLoading -> {
+                    LoadingIndicator()
+                }
+
+                state.errorType != null -> {
+                    if (state.itemList.isNotEmpty()) {
+                        LaunchedEffect(state.toastMessage) {
+                            state.toastMessage?.let {
+                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                accept(Event.ClearToast)
+                            }
                         }
+                        ItemList(
+                            isWideDisplay = isWideDisplay,
+                            itemList = state.itemList,
+                            navController = navController,
+                            paddingValues = PaddingValues(0.dp)
+                        )
+                    } else {
+                        ErrorScreen(state.errorType)
                     }
+                }
+
+                state.itemList.isEmpty() -> {
+                    EmptyScreen()
+                }
+
+                else -> {
                     ItemList(
                         isWideDisplay = isWideDisplay,
-                        itemList = state.value.itemList,
+                        itemList = state.itemList,
                         navController = navController,
-                        paddingValues = paddingValues
+                        paddingValues = PaddingValues(0.dp)
                     )
-                } else {
-                    ErrorScreen(state.value.errorType ?: ErrorScreenState.NOTHING_FOUND)
                 }
-            }
-
-            state.value.itemList.isEmpty() -> {
-                Empty()
-            }
-
-            else -> {
-                ItemList(
-                    isWideDisplay = isWideDisplay,
-                    itemList = state.value.itemList,
-                    navController = navController,
-                    paddingValues = paddingValues
-                )
             }
         }
     }
@@ -211,86 +234,5 @@ private fun AdaptiveNewsItem(
                 ShareButton(context, item.link, Modifier.weight(1f))
             }
         }
-    }
-}
-
-@Composable
-private fun ImageBlock(
-    item: Item,
-    modifier: Modifier = Modifier
-) {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(item.imageUrl)
-            .crossfade(true)
-            .build(),
-        placeholder = rememberVectorPainter(image = PlaceholderImg),
-        contentDescription = stringResource(
-            R.string.image_news_description,
-            item.title
-        ),
-        error = rememberVectorPainter(image = NoResourceImg),
-        contentScale = ContentScale.FillWidth,
-        modifier = modifier
-            .height(240.dp)
-            .clip(RoundedCornerShape(16.dp))
-    )
-}
-
-@Composable
-private fun TitleBlock(
-    item: Item,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = item.title,
-        color = MaterialTheme.colorScheme.primary,
-        style = MaterialTheme.typography.titleLarge,
-        modifier = modifier
-    )
-}
-
-@Composable
-private fun Empty() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(R.string.empty_list),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-    }
-}
-
-
-@Composable
-private fun ShareButton(
-    context: Context,
-    link: String,
-    modifier: Modifier = Modifier
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, link)
-            }
-            context.startActivity(
-                Intent.createChooser(
-                    shareIntent,
-                    context.getString(R.string.share_link)
-                )
-            )
-        }
-    ) {
-        Icon(
-            imageVector = Icons.Default.Share,
-            contentDescription = context.getString(R.string.share_icon),
-            tint = MaterialTheme.colorScheme.primary
-        )
     }
 }
