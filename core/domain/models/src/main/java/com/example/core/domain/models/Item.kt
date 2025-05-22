@@ -4,8 +4,8 @@ data class Item(
     val title: String,
     val link: String,
     val description: String,
-    val categories: List<Category>,
+    val categories: List<String>,
     val pubDate: String,
     val guid: String,
-    val contents: List<Content>
+    val imageUrl: String?
 )

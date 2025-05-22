@@ -2,13 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.example.feature.newslist.data"
+    namespace = "com.example.core.data.db"
     compileSdk = libs.versions.compileSdk.get().toInt()
-
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
@@ -36,21 +34,21 @@ android {
 }
 
 dependencies {
-    api(project(":feature:newslist:domain:api"))
-    implementation(project(":core:data:network"))
-    implementation(project(":core:data:db"))
     implementation(project(":core:domain:models"))
     implementation(project(":core:data:dto"))
-
-    // hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
-    implementation(libs.retrofit2)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

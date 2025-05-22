@@ -37,17 +37,23 @@ android {
 dependencies {
 
     api(project(":core:data:network"))
+    api(project(":core:data:db"))
 
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.retrofit2)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
     implementation(libs.converter.simplexml)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+
 }

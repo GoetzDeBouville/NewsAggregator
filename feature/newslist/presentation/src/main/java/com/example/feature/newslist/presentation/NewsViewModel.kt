@@ -2,8 +2,13 @@ package com.example.feature.newslist.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature.newslist.domain.api.ExtractCategoriesUseCase
+import com.example.core.domain.models.ErrorType
+import com.example.core.domain.models.Item
+import com.example.core.domain.models.Resource
+import com.example.core.domain.models.Resource.Error
+import com.example.core.resources.R
 import com.example.feature.newslist.domain.api.GetNewsRepository
+import com.example.feature.newslist.presentation.models.Intent
 import com.example.feature.newslist.presentation.models.State
 import com.newsapp.uikit.error.ErrorScreenState
 import com.newsapp.uikit.error.mapToErrorScreen
@@ -16,8 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    private val repository: GetNewsRepository,
-    private val extractCategories: ExtractCategoriesUseCase
+    private val repository: GetNewsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(State(isLoading = true))
@@ -27,7 +31,7 @@ class NewsViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 repository.getNewsItems()
-            }.onFailure { items ->
+            }.onFailure { e ->
                 _state.update {
                     _state.value.copy(
                         isLoading = false,
@@ -36,17 +40,10 @@ class NewsViewModel @Inject constructor(
                 }
             }.onSuccess { response ->
                 response.collect { resource ->
-                    if (resource.error != null) {
-                        _state.update {
-                            _state.value.copy(
-                                isLoading = false,
-                                errorType = resource.error?.mapToErrorScreen(),
-                                itemList = emptyList()
-                            )
-                        }
-                    } else {
-                        _state.update {
-                            _state.value.copy(
+                    when (resource) {
+                        is Resource.Error -> handleError(resource)
+                        is Resource.Success -> _state.update {
+                            it.copy(
                                 isLoading = false,
                                 errorType = null,
                                 itemList = resource.data ?: emptyList()
@@ -58,6 +55,48 @@ class NewsViewModel @Inject constructor(
                     _state.value.copy()
                 }
             }
+        }
+    }
+
+    internal fun accept(intent: Intent) {
+        when (intent) {
+            is Intent.ClearSearch -> {}
+            is Intent.ClearToast -> {
+                _state.update {
+                    it.copy(
+                        toastMessage = null
+                    )
+                }
+            }
+            is Intent.SearchTextChanged -> {}
+        }
+    }
+
+    private fun handleError(error: Error<List<Item>>) {
+        val items = error.data.orEmpty()
+        val errorType = error.error?.mapToErrorScreen()
+
+        _state.update {
+            it.copy(
+                isLoading = false,
+                itemList = items,
+                errorType = errorType,
+                toastMessage = if (items.isNotEmpty()) {
+                    getToastTextForErrorType(error.error)
+                } else {
+                    null
+                }
+            )
+        }
+    }
+
+    private fun getToastTextForErrorType(errorType: ErrorType?): Int? {
+        return when (errorType) {
+            ErrorType.NO_CONNECTION -> R.string.error_no_internet_connection
+            ErrorType.SERVER_ERROR -> R.string.error_something_went_wrong
+            ErrorType.BAD_REQUEST -> R.string.error_nothing_found
+            ErrorType.UNKNOWN_ERROR -> R.string.error_nothing_found
+            else -> null
         }
     }
 }

@@ -11,10 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.core.domain.models.Category
 
 @Composable
-fun Categories(categories: List<Category>) {
+fun Categories(categories: List<String>) {
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,7 +28,7 @@ fun Categories(categories: List<Category>) {
 }
 
 @Composable
-private fun CategoryChip(category: Category) {
+private fun CategoryChip(category: String) {
     Box(
         modifier = Modifier
             .background(
@@ -39,7 +38,7 @@ private fun CategoryChip(category: Category) {
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
-            text = category.value,
+            text = category,
             color = MaterialTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.labelSmall
         )

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-val IconPlaceholder: ImageVector
+val PlaceholderImg: ImageVector
     @Composable
     get() {
         _Placeholder = ImageVector.Builder(
@@ -109,7 +109,7 @@ private var _Placeholder: ImageVector? = null
 @Composable
 private fun IconPlaceholder() {
     Icon(
-        imageVector = IconPlaceholder,
+        imageVector = PlaceholderImg,
         contentDescription = "Placeholder Icon",
         modifier = Modifier.size(64.dp)
     )

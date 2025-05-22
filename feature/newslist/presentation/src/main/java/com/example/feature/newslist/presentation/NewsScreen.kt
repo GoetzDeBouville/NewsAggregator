@@ -1,5 +1,6 @@
 package com.example.feature.newslist.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +44,10 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.core.domain.models.Item
 import com.example.core.presentation.nav.Routes
-import com.example.core.resources.IconPlaceholder
+import com.example.core.resources.NoResourceImg
+import com.example.core.resources.PlaceholderImg
 import com.example.core.resources.R
+import com.example.feature.newslist.presentation.models.Intent
 import com.newsapp.uikit.Categories
 import com.newsapp.uikit.DescriptionHtmlText
 import com.newsapp.uikit.LoadingIndicator
@@ -73,13 +77,29 @@ fun NewsScreen(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { paddingValues ->
+        val context = LocalContext.current
         when {
             state.value.isLoading -> {
                 LoadingIndicator()
             }
 
             state.value.errorType != null -> {
-                ErrorScreen(state.value.errorType ?: ErrorScreenState.NOTHING_FOUND)
+                if (state.value.itemList.isNotEmpty()) {
+                    LaunchedEffect(state.value.toastMessage) {
+                        state.value.toastMessage?.let {
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                            viewModel.accept(Intent.ClearToast)
+                        }
+                    }
+                    ItemList(
+                        isWideDisplay = isWideDisplay,
+                        itemList = state.value.itemList,
+                        navController = navController,
+                        paddingValues = paddingValues
+                    )
+                } else {
+                    ErrorScreen(state.value.errorType ?: ErrorScreenState.NOTHING_FOUND)
+                }
             }
 
             state.value.itemList.isEmpty() -> {
@@ -97,7 +117,6 @@ fun NewsScreen(
         }
     }
 }
-
 
 @Composable
 private fun ItemList(
@@ -144,7 +163,6 @@ private fun AdaptiveNewsItem(
                         item,
                         modifier = Modifier
                             .weight(0.6f)
-                            .clip(RoundedCornerShape(16.dp))
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     TitleBlock(
@@ -159,7 +177,6 @@ private fun AdaptiveNewsItem(
                     item,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TitleBlock(
@@ -191,15 +208,15 @@ private fun ImageBlock(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(item.contents.getOrNull(1)?.url)
+            .data(item.imageUrl)
             .crossfade(true)
             .build(),
-        placeholder = rememberVectorPainter(image = IconPlaceholder),
+        placeholder = rememberVectorPainter(image = PlaceholderImg),
         contentDescription = stringResource(
             R.string.image_news_description,
-            item.title,
-            item.contents.getOrNull(1)?.credit?.scheme ?: ""
+            item.title
         ),
+        error = rememberVectorPainter(image = NoResourceImg),
         contentScale = ContentScale.FillWidth,
         modifier = modifier
             .height(240.dp)
@@ -232,64 +249,5 @@ private fun Empty() {
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
-    }
-}
-
-
-@Composable
-private fun NewsItem(
-    navController: NavController,
-    item: Item
-) {
-    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-            .clickable {
-                navController.navigate(Routes.ArticleScreen.createRoute(item.guid))
-            },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.contents.getOrNull(1)?.url)
-                    .crossfade(true)
-                    .build(),
-                placeholder = rememberVectorPainter(image = IconPlaceholder),
-                contentDescription = stringResource(
-                    R.string.image_news_description,
-                    item.title,
-                    item.contents.getOrNull(1)?.credit?.scheme ?: ""
-                ),
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(240.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = item.title,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleLarge
-            )
-            DescriptionHtmlText(
-                html = item.description,
-                textColor = MaterialTheme.colorScheme.onSurface
-            )
-            Categories(item.categories)
-
-            Text(
-                text = item.pubDate,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.labelMedium
-            )
-        }
     }
 }
