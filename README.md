@@ -15,14 +15,6 @@ api - https://www.theguardian.com
 - Multi-modules (поздно получил ответ от hr, поэтому решил оставить многомодульность)
 - Responsive and adaptive layouts (for Medium and Expanded displays)
 
-### Contact me  📬
-
-<p align="left">
-[![](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aleksey-zinchenko-9b3760252/)
-[![](https://img.shields.io/badge/Telegram-0077B5?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/heoderer)
-[![](https://img.shields.io/badge/Facebook-0077B5?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/double.conscience)
-</p>
-
 ## Пункты по ТЗ
 ✅Новости берутся из rss канала https://www.theguardian.com/international/rss газеты Guardian https://www.theguardian.com
 
